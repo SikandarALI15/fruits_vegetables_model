@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+import requests
 
 import numpy as np
 import streamlit as st
@@ -10,6 +11,9 @@ BASE_DIR = Path(__file__).resolve().parent
 MODEL_PATH = BASE_DIR / "model.h5"
 LABELS_PATH = BASE_DIR / "class_names.json"
 IMAGE_SIZE = (128, 128)
+
+# Hugging Face direct download link
+MODEL_URL = "https://huggingface.co/sikandarWithCode/fruit-veg-model/resolve/main/model.h5"
 
 st.set_page_config(
     page_title="Fruit & Vegetable Classifier",
@@ -40,7 +44,15 @@ st.markdown("""
 @st.cache_resource
 def load_model():
     if not MODEL_PATH.exists():
-        return None
+        with st.spinner("Downloading model from Hugging Face... Please wait."):
+            response = requests.get(MODEL_URL, stream=True)
+            if response.status_code == 200:
+                with open(MODEL_PATH, "wb") as f:
+                    for chunk in response.iter_content(chunk_size=8192):
+                        f.write(chunk)
+            else:
+                st.error("Model download nahi ho saka.")
+                return None
     return tf.keras.models.load_model(MODEL_PATH)
 
 @st.cache_data
@@ -69,8 +81,7 @@ model = load_model()
 class_names = load_labels()
 
 if model is None or class_names is None:
-    st.error("Model files are missing. Add `model.h5` and `class_names.json` to this folder.")
-    st.info("Open the README file for the exact code to save these files from your training notebook.")
+    st.error("Model files are missing. Check `class_names.json` or model download link.")
     st.stop()
 
 left, right = st.columns([1, 1], gap="large")
