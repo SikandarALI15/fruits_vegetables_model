@@ -53,7 +53,8 @@ def load_model():
             else:
                 st.error("Model download nahi ho saka.")
                 return None
-    return tf.keras.models.load_model(MODEL_PATH)
+    # compile=False yahan version conflict aur TypeError ko khatam kar dega
+    return tf.keras.models.load_model(MODEL_PATH, compile=False)
 
 @st.cache_data
 def load_labels():
