@@ -7,7 +7,7 @@ import tensorflow as tf
 from PIL import Image
 
 BASE_DIR = Path(__file__).resolve().parent
-MODEL_PATH = BASE_DIR / "model.keras"
+MODEL_PATH = BASE_DIR / "model.h5"
 LABELS_PATH = BASE_DIR / "class_names.json"
 IMAGE_SIZE = (128, 128)
 
@@ -60,8 +60,8 @@ with st.sidebar:
 
 st.markdown("""
 <div class="hero">
-  <h1>🍎 Fruit & Vegetable Classifier</h1>
-  <p>Upload an image and let your trained CNN predict what it sees.</p>
+    <h1>🍎 Fruit & Vegetable Classifier</h1>
+    <p>Upload an image and let your trained CNN predict what it sees.</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -69,7 +69,7 @@ model = load_model()
 class_names = load_labels()
 
 if model is None or class_names is None:
-    st.error("Model files are missing. Add `model.keras` and `class_names.json` to this folder.")
+    st.error("Model files are missing. Add `model.h5` and `class_names.json` to this folder.")
     st.info("Open the README file for the exact code to save these files from your training notebook.")
     st.stop()
 
